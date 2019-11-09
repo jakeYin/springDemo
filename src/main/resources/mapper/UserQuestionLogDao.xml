@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dream.demo.dao.UserQuestionLogDao">
+
+    <resultMap type="com.dream.demo.entity.UserQuestionLog" id="UserQuestionLogMap">
+        <result property="id" column="ID" jdbcType="VARCHAR"/>
+        <result property="userId" column="USER_ID" jdbcType="VARCHAR"/>
+        <result property="answer" column="ANSWER" jdbcType="VARCHAR"/>
+        <result property="state" column="STATE" jdbcType="VARCHAR"/>
+        <result property="description" column="DESCRIPTION" jdbcType="VARCHAR"/>
+        <result property="questionId" column="QUESTION_ID" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="UserQuestionLogMap">
+        select
+          ID, USER_ID, ANSWER, STATE, DESCRIPTION, QUESTION_ID
+        from test.t_user_question_log
+        where ID = #{id}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="UserQuestionLogMap">
+        select
+        ID, USER_ID, ANSWER, STATE, DESCRIPTION, QUESTION_ID
+        from test.t_user_question_log
+        <where>
+            <if test="id != null and id != ''">
+                and ID = #{id}
+            </if>
+            <if test="userId != null and userId != ''">
+                and USER_ID = #{userId}
+            </if>
+            <if test="answer != null and answer != ''">
+                and ANSWER = #{answer}
+            </if>
+            <if test="state != null and state != ''">
+                and STATE = #{state}
+            </if>
+            <if test="description != null and description != ''">
+                and DESCRIPTION = #{description}
+            </if>
+            <if test="questionId != null and questionId != ''">
+                and QUESTION_ID = #{questionId}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into test.t_user_question_log(ID,USER_ID, ANSWER, STATE, DESCRIPTION, QUESTION_ID)
+        values (#{id},#{userId}, #{answer}, #{state}, #{description}, #{questionId})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update test.t_user_question_log
+        <set>
+            <if test="userId != null and userId != ''">
+                USER_ID = #{userId},
+            </if>
+            <if test="answer != null and answer != ''">
+                ANSWER = #{answer},
+            </if>
+            <if test="state != null and state != ''">
+                STATE = #{state},
+            </if>
+            <if test="description != null and description != ''">
+                DESCRIPTION = #{description},
+            </if>
+            <if test="questionId != null and questionId != ''">
+                QUESTION_ID = #{questionId},
+            </if>
+        </set>
+        where ID = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from test.t_user_question_log where ID = #{id}
+    </delete>
+
+    <select id="getQuestionSummary" resultType="com.dream.demo.vo.QuestionSummaryVo">
+        select count(*) allCount,
+        IFNULL(sum(case STATE when 1 then 1 else 0 end ),0)  rightCount
+        from t_user_question_log
+        where QUESTION_ID = #{arg0}
+    </select>
+
+</mapper>

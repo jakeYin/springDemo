@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dream.demo.dao.QuestionDao">
+
+    <resultMap type="com.dream.demo.entity.Question" id="QuestionMap">
+        <result property="id" column="ID" jdbcType="VARCHAR"/>
+        <result property="title" column="TITLE" jdbcType="VARCHAR"/>
+        <result property="type" column="TYPE" jdbcType="VARCHAR"/>
+        <result property="answerRight" column="ANSWER_RIGHT" jdbcType="VARCHAR"/>
+        <result property="parser" column="PARSER" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap type="com.dream.demo.vo.QuestionVo" id="QuestionMap2">
+        <result property="id" column="ID" jdbcType="VARCHAR"/>
+        <result property="userQuestionId" column="userQuestionId" jdbcType="VARCHAR"/>
+        <result property="title" column="TITLE" jdbcType="VARCHAR"/>
+        <result property="questionId" column="QUESTION_ID" jdbcType="VARCHAR"/>
+        <result property="type" column="TYPE" jdbcType="VARCHAR"/>
+        <result property="answerRight" column="ANSWER_RIGHT" jdbcType="VARCHAR"/>
+        <result property="parser" column="PARSER" jdbcType="VARCHAR"/>
+        <result property="userId" column="USER_ID" jdbcType="VARCHAR"/>
+        <result property="answer" column="ANSWER" jdbcType="VARCHAR"/>
+        <result property="state" column="STATE" jdbcType="VARCHAR"/>
+        <result property="description" column="DESCRIPTION" jdbcType="VARCHAR"/>
+        <result property="isFav" column="IS_FAV" jdbcType="VARCHAR"/>
+        <result property="examId" column="EXAM_ID" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="QuestionMap">
+        select
+          ID, TITLE, TYPE, ANSWER_RIGHT, PARSER
+        from test.t_question
+        where ID = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryByExamId" resultMap="QuestionMap2">
+        select q.*,teq.EXAM_ID, tuq.ID as userQuestionId,tuq.QUESTION_ID, tuq.USER_ID,tuq.EXAM_QUESTION_ID,tuq.ANSWER,tuq.STATE,tuq.DESCRIPTION,tuq.IS_FAV from t_exam_question teq
+            left join t_question q
+            on teq.QUESTION_ID = q.ID
+            left join t_user_question tuq
+            on tuq.EXAM_QUESTION_ID = teq.ID
+        where teq.EXAM_ID = #{id}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="QuestionMap">
+        select
+        ID, TITLE, TYPE, ANSWER_RIGHT, PARSER
+        from test.t_question
+        <where>
+            <if test="id != null and id != ''">
+                and ID = #{id}
+            </if>
+            <if test="title != null and title != ''">
+                and TITLE = #{title}
+            </if>
+            <if test="type != null and type != ''">
+                and TYPE = #{type}
+            </if>
+            <if test="answerRight != null and answerRight != ''">
+                and ANSWER_RIGHT = #{answerRight}
+            </if>
+            <if test="parser != null and parser != ''">
+                and PARSER = #{parser}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into test.t_question(TITLE, TYPE, ANSWER_RIGHT, PARSER)
+        values (#{title}, #{type}, #{answerRight}, #{parser})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update test.t_question
+        <set>
+            <if test="title != null and title != ''">
+                TITLE = #{title},
+            </if>
+            <if test="type != null and type != ''">
+                TYPE = #{type},
+            </if>
+            <if test="answerRight != null and answerRight != ''">
+                ANSWER_RIGHT = #{answerRight},
+            </if>
+            <if test="parser != null and parser != ''">
+                PARSER = #{parser},
+            </if>
+        </set>
+        where ID = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from test.t_question where ID = #{id}
+    </delete>
+
+</mapper>

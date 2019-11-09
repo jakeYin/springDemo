@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dream.demo.dao.UserExamDao">
+
+    <resultMap type="com.dream.demo.entity.UserExam" id="UserExamMap">
+        <result property="id" column="ID" jdbcType="VARCHAR"/>
+        <result property="userId" column="USER_ID" jdbcType="VARCHAR"/>
+        <result property="examId" column="EXAM_ID" jdbcType="VARCHAR"/>
+        <result property="state" column="STATE" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="UserExamMap">
+        select
+          ID, USER_ID, EXAM_ID, STATE
+        from test.t_user_exam
+        where ID = #{id}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="UserExamMap">
+        select
+          ID, USER_ID, EXAM_ID, STATE
+        from test.t_user_exam
+        <where>
+            <if test="id != null and id != ''">
+                and ID = #{id}
+            </if>
+            <if test="userId != null and userId != ''">
+                and USER_ID = #{userId}
+            </if>
+            <if test="examId != null and examId != ''">
+                and EXAM_ID = #{examId}
+            </if>
+            <if test="state != null and state != ''">
+                and STATE = #{state}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into test.t_user_exam(ID,USER_ID, EXAM_ID, STATE)
+        values (#{id},#{userId}, #{examId}, #{state})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update test.t_user_exam
+        <set>
+            <if test="userId != null and userId != ''">
+                USER_ID = #{userId},
+            </if>
+            <if test="examId != null and examId != ''">
+                EXAM_ID = #{examId},
+            </if>
+            <if test="state != null and state != ''">
+                STATE = #{state},
+            </if>
+        </set>
+        where ID = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from test.t_user_exam where ID = #{id}
+    </delete>
+
+</mapper>

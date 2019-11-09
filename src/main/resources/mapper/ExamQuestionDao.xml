@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dream.demo.dao.ExamQuestionDao">
+
+    <resultMap type="com.dream.demo.entity.ExamQuestion" id="ExamQuestionMap">
+        <result property="id" column="ID" jdbcType="VARCHAR"/>
+        <result property="examId" column="EXAM_ID" jdbcType="VARCHAR"/>
+        <result property="questionId" column="QUESTION_ID" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="ExamQuestionMap">
+        select
+          ID, EXAM_ID, QUESTION_ID
+        from test.t_exam_question
+        where ID = #{id}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="ExamQuestionMap">
+        select
+          ID, EXAM_ID, QUESTION_ID
+        from test.t_exam_question
+        <where>
+            <if test="id != null and id != ''">
+                and ID = #{id}
+            </if>
+            <if test="examId != null and examId != ''">
+                and EXAM_ID = #{examId}
+            </if>
+            <if test="questionId != null and questionId != ''">
+                and QUESTION_ID = #{questionId}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into test.t_exam_question(EXAM_ID, QUESTION_ID)
+        values (#{examId}, #{questionId})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update test.t_exam_question
+        <set>
+            <if test="examId != null and examId != ''">
+                EXAM_ID = #{examId},
+            </if>
+            <if test="questionId != null and questionId != ''">
+                QUESTION_ID = #{questionId},
+            </if>
+        </set>
+        where ID = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from test.t_exam_question where ID = #{id}
+    </delete>
+
+</mapper>

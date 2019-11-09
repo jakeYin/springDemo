@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dream.demo.dao.UserQuestionDao">
+
+    <resultMap type="com.dream.demo.entity.UserQuestion" id="UserQuestionMap">
+        <result property="id" column="ID" jdbcType="VARCHAR"/>
+        <result property="userId" column="USER_ID" jdbcType="VARCHAR"/>
+        <result property="examQuestionId" column="EXAM_QUESTION_ID" jdbcType="VARCHAR"/>
+        <result property="answer" column="ANSWER" jdbcType="VARCHAR"/>
+        <result property="state" column="STATE" jdbcType="VARCHAR"/>
+        <result property="description" column="DESCRIPTION" jdbcType="VARCHAR"/>
+        <result property="isFav" column="IS_FAV" jdbcType="VARCHAR"/>
+        <result property="questionId" column="QUESTION_ID" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="UserQuestionMap">
+        select
+          ID, USER_ID, EXAM_QUESTION_ID, ANSWER, STATE, DESCRIPTION, IS_FAV, QUESTION_ID
+        from test.t_user_question
+        where ID = #{id}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="UserQuestionMap">
+        select
+          ID, USER_ID, EXAM_QUESTION_ID, ANSWER, STATE, DESCRIPTION, IS_FAV, QUESTION_ID
+        from test.t_user_question
+        <where>
+            <if test="id != null and id != ''">
+                and ID = #{id}
+            </if>
+            <if test="userId != null and userId != ''">
+                and USER_ID = #{userId}
+            </if>
+            <if test="examQuestionId != null and examQuestionId != ''">
+                and EXAM_QUESTION_ID = #{examQuestionId}
+            </if>
+            <if test="answer != null and answer != ''">
+                and ANSWER = #{answer}
+            </if>
+            <if test="state != null and state != ''">
+                and STATE = #{state}
+            </if>
+            <if test="description != null and description != ''">
+                and DESCRIPTION = #{description}
+            </if>
+            <if test="isFav != null and isFav != ''">
+                and IS_FAV = #{isFav}
+            </if>
+            <if test="questionId != null and questionId != ''">
+                and QUESTION_ID = #{questionId}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into test.t_user_question (USER_ID, EXAM_QUESTION_ID, ANSWER, STATE, DESCRIPTION, IS_FAV, QUESTION_ID)
+        values (#{userId}, #{examQuestionId}, #{answer}, #{state}, #{description}, #{isFav}, #{questionId})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update test.t_user_question
+        <set>
+            <if test="userId != null and userId != ''">
+                USER_ID = #{userId},
+            </if>
+            <if test="examQuestionId != null and examQuestionId != ''">
+                EXAM_QUESTION_ID = #{examQuestionId},
+            </if>
+            <if test="answer != null and answer != ''">
+                ANSWER = #{answer},
+            </if>
+            <if test="state != null and state != ''">
+                STATE = #{state},
+            </if>
+            <if test="description != null and description != ''">
+                DESCRIPTION = #{description},
+            </if>
+            <if test="isFav != null and isFav != ''">
+                IS_FAV = #{isFav},
+            </if>
+            <if test="questionId != null and questionId != ''">
+                QUESTION_ID = #{questionId},
+            </if>
+        </set>
+        where ID = #{id}
+    </update>
+
+    <update id="cleanAnswer">
+        update test.t_user_question
+        <set>
+                ANSWER = '',
+                STATE = '',
+        </set>
+        where USER_ID = #{userId} and EXAM_ID = #{examId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from test.t_user_question where ID = #{id}
+    </delete>
+
+    <!--通过ExamQuestionId删除-->
+    <delete id="deleteByExamQuestionId">
+        delete from test.t_user_question where EXAM_QUESTION_ID = #{id}
+    </delete>
+
+
+    <!--新增所有列-->
+    <insert id="insertBatch" parameterType="java.util.List" keyProperty="id" useGeneratedKeys="true">
+        insert into test.t_user_question(ID,USER_ID, EXAM_QUESTION_ID, ANSWER, STATE, DESCRIPTION, IS_FAV,QUESTION_ID,EXAM_ID)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.id},#{item.userId}, #{item.examQuestionId}, #{item.answer}, #{item.state}, #{item.description}, #{item.isFav},#{item.questionId},#{item.examId})
+        </foreach>
+    </insert>
+
+</mapper>
