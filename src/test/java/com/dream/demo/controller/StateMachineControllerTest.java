@@ -1,5 +1,6 @@
 package com.dream.demo.controller;
 
+import com.dream.demo.machine2.ActionType;
 import com.dream.demo.service.UserService;
 import org.junit.Before;
 import org.junit.Test;

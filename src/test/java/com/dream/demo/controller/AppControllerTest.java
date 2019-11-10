@@ -21,7 +21,7 @@ public class AppControllerTest {
 
         // 获取json中store下book下的所有title值
         List<String> titles = (List<String>) JSONPath.read(json, "$..title");
-        System.out.println("$.store.book.title = " + titles);
+        System.out.println("$.store.book.title =   " + titles);
 //
 //        // 获取json中所有title的值
 //        titles = (List<Object>) JSONPath.read(json, "$..title");
